@@ -63,36 +63,6 @@ double random_double(double min, double max) {
     return dis(gen);
 }
 
-// std::vector<Circle> create_random_circles(double radius_big, double radius_small, int num_circles) {
-//     std::vector<Circle> circles;
-//     int attempts = 0;
-//     int max_attempts = 1000;
-//     double epsilon = 0.1;
-
-//     while (circles.size() < num_circles && attempts < max_attempts) {
-//         double angle = random_double(0, 2 * M_PI);
-//         double r = random_double(0, radius_big - radius_small);
-//         double x = r * cos(angle);
-//         double y = r * sin(angle);
-
-//         bool overlap = false;
-//         for (const auto& circle : circles) {
-//             double distance = std::sqrt((x - circle.center.x) * (x - circle.center.x) +
-//                                         (y - circle.center.y) * (y - circle.center.y));
-//             if (distance < 2 * radius_small + epsilon) {
-//                 overlap = true;
-//                 break;
-//             }
-//         }
-
-//         if (!overlap) {
-//             circles.push_back({{x, y}, radius_small});
-//         }
-//         attempts++;
-//     }
-//     return circles;
-// }
-
 // Function to create random circles using grid-based optimization
 std::vector<Circle> create_random_circles(double radius_big, double radius_small, int num_circles) {
     std::vector<Circle> circles;
@@ -532,78 +502,6 @@ void rotate_circles(std::vector<Circle>& circles, double angle) {
     }
 }
 
-// void simulate_small_circles(int num_paths, double radius_big, double radius_small, 
-//             int num_circles, double n1, double n2, double sigma_a, unsigned int seed, int num_bins) {
-//     // Set the random seed
-//     gen.seed(seed);
-
-//     std::vector<Circle> circles = create_random_circles(radius_big, radius_small, num_circles);
-    
-//     // // Store origins of small circles
-//     // std::ofstream circle_file("circle_origins.csv");
-//     // circle_file << "Center X,Center Y\n";
-//     // for (const auto& circle : circles) {
-//     //     circle_file << circle.center.x << "," << circle.center.y << "\n";
-//     // }
-//     // circle_file.close();
-
-//     //std::vector<Vec2> interaction_points;
-//     //Vec2 start_point = random_point_on_circle(radius_big);
-//     // Vec2 start_point = {-10, 0};
-//     //double incident_angle = random_double(0, 2 * M_PI) + M_PI;
-//     double incident_angle = 0.0;
-//     //std::vector<std::tuple<double, double, Vec2>> results;
-//     std::vector<double> energies;
-//     std::vector<double> outgoing_angles;
-
-//     double epsilon = M_PI / 100.0;
-//     #pragma omp parallel for
-//     for (int i = 0; i < num_paths; ++i) {
-
-//         double y_start = -radius_big + (2.0 * radius_big * double(i) / double(num_paths));  
-//         //double y_start = -8.0;
-//         // Uniformly distribute starting points
-//         Vec2 ray_origin = {-radius_big - 1.0, y_start};  // Start just left of the circle
-//         Vec2 ray_direction = {std::cos(incident_angle), std::sin(incident_angle)};
-        
-//         double energy = 1.0;  // Initial energy
-//         bool has_intersected = false;
-//         bool exit = false;
-//         int j = 0;
-
-//         double theta = (M_PI - 2 * epsilon) / num_paths * i + M_PI / 2 + epsilon;
-//         Vec2 start_point = {std::cos(theta)*radius_big, std::sin(theta)*radius_big};
-//         trace_ray(ray_origin, ray_direction, circles, radius_big, n1, n2, 
-//                     sigma_a, incident_angle, outgoing_angles, energies);
-//         // #pragma omp critical
-//         // {
-//         //     interaction_points.insert(interaction_points.end(), local_interaction_points.begin(), local_interaction_points.end());
-//         // }
-//     }
-
-//     // // Write interaction points to a file
-//     // std::ofstream interaction_file("interaction_points.csv");
-//     // interaction_file << "X,Y\n";
-//     // for (const auto& point : interaction_points) {
-//     //     interaction_file << point.x << "," << point.y << "\n";
-//     // }
-//     // interaction_file.close();
-
-//     // std::ofstream outfile("ray_simulation_results.csv");
-//     // outfile << "Outgoing Angle (radians),Energy,Exit Point X,Exit Point Y\n";
-//     // for (const auto& result : results) {
-//     //     double angle, energy;
-//     //     Vec2 exit_point;
-//     //     std::tie(angle, energy, exit_point) = result;
-//     //     outfile << angle << "," << energy << "," << exit_point.x << "," << exit_point.y << "\n";
-//     // }
-//     // outfile.close();
-
-//      // Save the energy distribution to a binary file    
-//     compute_angular_energy_distribution(outgoing_angles, energies, num_bins, "multiple.bin");
-// }
-
-
 void simulate_small_circles(int num_paths, double radius_big, double radius_small, 
                             int num_circles, double n1, double n2, double sigma_a, 
                             unsigned int seed, int num_bins, int num_exp,
@@ -955,31 +853,10 @@ void simulate_large_circle(int num_rays, double radius_big, double n1, double n2
 
             if (random_number < fresnel) {
                 // Reflect the ray
-                // std::cout<<"current_direction: "<<current_direction.x<<", "<<current_direction.y<<std::endl;
-                // std::cout<<"normal: "<<normal.x<<", "<<normal.y<<std::endl;
                 current_direction = current_direction - normal * (2 * current_direction.dot(normal));
-                //std::cout<<"current_direction: "<<current_direction.x<<", "<<current_direction.y<<std::endl;
-                // // compute reflected angle and see if it equals to the incident angle
-                // double reflected_angle = current_direction.dot(normal);
-                // std::cout<<"incident angle "<<cos_i<<", reflected angle "<<reflected_angle<<std::endl;
-                //abort();
-
-                // fresnel = fresnel_reflectance(cos_i, n1, n2);
-                // energy *= fresnel;
             } else {
                 // Refract the ray
                 Vec2 refracted_direction = refract(current_direction, normal, n1, n2);
-                // Vec2 tmp_dir;
-                // tmp_dir.x = -0.736996, tmp_dir.y = -0.675898;
-                // Vec2 tmp_normal;
-                // tmp_normal.x = 0.736996, tmp_normal.y = 0.675898;
-                // Vec2 refracted_direction = refract(tmp_dir, tmp_normal, 1.0, 1.53);
-                // if (std::isnan(refracted_direction.x) || std::isnan(refracted_direction.y)) {
-                //     std::cout<<"current_direction: "<<current_direction.x<<", "<<current_direction.y<<std::endl;
-                //     std::cout<<"normal: "<<normal.x<<", "<<normal.y<<std::endl;
-                //     std::cout<<"n1 = "<<n1<<", n2 = "<<n2<<std::endl;
-                //     abort();
-                // }
                 if (refracted_direction.norm() == 0) {
                     // Total internal reflection
                     current_direction = current_direction - normal * (2 * current_direction.dot(normal));
@@ -1172,12 +1049,6 @@ void simulate_double_circles(int num_rays, double radius_big, double radius_smal
 
             // Determine reflection or refraction at the circle's surface
             double cos_i = -ray_direction.dot(normal);
-            // if in big circle and intersect with big circle, n1 = n_air, n2 = n_big
-            // if in big circle and intersect with small circle, n1 = n_big, n2 = n_small
-            // if in small circle, n1 = n_big, n2 = n_small
-
-            // std::cout<<"in_big_circle: "<<in_big_circle<<std::endl;
-            // std::cout<<"intersected_big: "<<intersected_big<<", intersected_small: "<<intersected_small<<std::endl;
 
             if (medium == 0){
                 n1 = n_air;
@@ -1195,53 +1066,18 @@ void simulate_double_circles(int num_rays, double radius_big, double radius_smal
                 n2 = n_small;
             }
 
-            // std::cout<<"bounce: "<<j<<std::endl;
-            // std::cout<<"intersected_big: "<<intersected_big<<", intersected_small: "<<intersected_small<<std::endl;
-            // std::cout<<"in_big_circle: "<<in_big_circle<<std::endl;
-            // std::cout<<"intersection_point: "<<intersection_point.x<<", "<<intersection_point.y<<std::endl;
-            // std::cout<<"current_direction: "<<current_direction.x<<", "<<current_direction.y<<std::endl;           
-
-            //std::cout<<"cos_i "<<cos_i<<" n1: "<<n1<<", n2: "<<n2<<std::endl;
             double fresnel = fresnel_reflectance(cos_i, n1, n2);
-            //double fresnel = 1.0;
             double random_number = random_double(0, 1);
-            //std::cout<<"fresnel: "<<fresnel<<", random_number: "<<random_number<<std::endl;
 
             if (random_number < fresnel) {                
                 // Reflect the ray
                 reflect = true;
-                // std::cout<<"current_direction: "<<current_direction.x<<", "<<current_direction.y<<std::endl;
-                // std::cout<<"normal: "<<normal.x<<", "<<normal.y<<std::endl;
                 current_direction = current_direction - normal * (2 * current_direction.dot(normal));
-                //std::cout<<"current_direction: "<<current_direction.x<<", "<<current_direction.y<<std::endl;
-                // // compute reflected angle and see if it equals to the incident angle
-                // double reflected_angle = current_direction.dot(normal);
-                // std::cout<<"incident angle "<<cos_i<<", reflected angle "<<reflected_angle<<std::endl;
-                //abort();
-
-                // fresnel = fresnel_reflectance(cos_i, n1, n2);
-                // energy *= fresnel;
 
             } else {
                 // Refract the ray
                 reflect = false;
-                // std::cout<<"current_direction: "<<current_direction.x<<", "<<current_direction.y<<std::endl;
-                // std::cout<<"normal: "<<normal.x<<", "<<normal.y<<std::endl;
-                // std::cout<<"n1 = "<<n1<<", n2 = "<<n2<<std::endl;
                 Vec2 refracted_direction = refract(current_direction, normal, n1, n2);
-                // std::cout<<"refracted_direction: "<<refracted_direction.x<<", "<<refracted_direction.y<<std::endl;
-                // abort();
-                // Vec2 tmp_dir;
-                // tmp_dir.x = -0.736996, tmp_dir.y = -0.675898;
-                // Vec2 tmp_normal;
-                // tmp_normal.x = 0.736996, tmp_normal.y = 0.675898;
-                // Vec2 refracted_direction = refract(tmp_dir, tmp_normal, 1.0, 1.53);
-                // if (std::isnan(refracted_direction.x) || std::isnan(refracted_direction.y)) {
-                //     std::cout<<"current_direction: "<<current_direction.x<<", "<<current_direction.y<<std::endl;
-                //     std::cout<<"normal: "<<normal.x<<", "<<normal.y<<std::endl;
-                //     std::cout<<"n1 = "<<n1<<", n2 = "<<n2<<std::endl;
-                //     abort();
-                // }
                 if (refracted_direction.norm() == 0) {
                     // Total internal reflection
                     current_direction = current_direction - normal * (2 * current_direction.dot(normal));
