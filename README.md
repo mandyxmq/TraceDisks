@@ -35,13 +35,13 @@ Writes `circles.csv` and `rays.json` for the Python animator.
 | Flag | Description | Default |
 |------|-------------|---------|
 | `--num_paths` | Rays per experiment | `1000000` |
-| `--num_circles` | Number of small disks | `100` |
+| `--num_circles` | Maximum number of small disks | `100` |
 | `--radius_small` | Radius of each small disk | `1.0` |
 | `--n1`, `--n2` | Refractive indices outside/inside | `1.00 / 1.50` |
 | `--sigma_a` | Absorption coefficient | `0.0` |
 | `--num_exp` | Experiments to average (multiple mode) | `100` |
 | `--epsilon` | Minimum gap between disks when packing | `0.1` |
-| `--max_bounces` | Max per-ray interactions (single mode) | `100` |
+| `--max_bounces` | Max per-ray interactions | `100` |
 | `--num_bins` | Angular histogram bins | `100` |
 | `--plot` | Enable recording for visualization | — |
 
